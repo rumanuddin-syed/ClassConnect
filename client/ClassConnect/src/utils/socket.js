@@ -7,7 +7,7 @@ export const connectSocket = (token) => {
     throw new Error('Cannot connect socket: No token provided');
   }
   const rawToken = token.replace(/^Bearer\s+/i, '').trim();
-  socket = io("https://classconnect-gsov.onrender.com/", {
+  socket = io("https://classconnect-gsov.onrender.com", {
     auth: { 
       token:rawToken,
     },
