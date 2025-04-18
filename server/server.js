@@ -26,10 +26,7 @@ connectDB();
 
 app.use(express.json());
 app.use(cookieParser());
-const allowedOrigins = [
-  "http://localhost:5173",
-  "https://classconnectproject.onrender.com"
-];
+const allowedOrigins = ["https://classconnectproject.onrender.com"];
 app.use(cors({origin: allowedOrigins,credentials:true}))
 
 const httpServer = createServer(app);
