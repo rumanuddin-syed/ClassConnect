@@ -9,7 +9,7 @@ export default function ForgotPassword() {
   const [email, setEmail] = useState('')
   const navigate = useNavigate()
   const dispatch = useDispatch();
-  const { loading, error, otpSent } = useSelector((state) => state.auth);
+  const { loading, error, resetOtpSent } = useSelector((state) => state.auth);
   const { token } = useSelector((state) => state.auth);
 
   const handleSubmit = async (e) => {
@@ -30,11 +30,11 @@ export default function ForgotPassword() {
   }
 
   useEffect(() => {
-    if (otpSent) {
+    if (resetOtpSent) {
       navigate("/reset-password-otp", { state: { email } });
       dispatch(clearState());
     }
-  }, [otpSent, navigate, dispatch, email]);
+  }, [resetOtpSent, navigate, dispatch, email]);
 
   useEffect(() => {
     if (token) {
