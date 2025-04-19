@@ -4,7 +4,7 @@ import AuthHeader from '../components/AuthHeader'
 import ThemeButton from '../components/ThemeButton'
 import { useDispatch, useSelector } from "react-redux";
 import { sendResetOtp, clearState } from "../redux/slices/authSlice";
-
+import { motion } from 'framer-motion'; // Add this line
 export default function ForgotPassword() {
   const [email, setEmail] = useState('')
   const navigate = useNavigate()
