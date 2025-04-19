@@ -18,10 +18,13 @@ import attendanceRouter from "./routes/attendanceRoutes.js";
 import { createServer } from 'http';
 import { initializeSocket ,getIO} from './socketInstance.js';
 import jwt from "jsonwebtoken"
+
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+
 const app = express();
 const port = process.env.PORT || 4000;
-
-
 connectDB();
 
 app.use(express.json());
@@ -31,6 +34,11 @@ app.use(cors({origin: allowedOrigins,credentials:true}))
 
 const httpServer = createServer(app);
 const io = initializeSocket(httpServer); // Get the io instance
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+const clientBuildPath = path.join(__dirname, 'client', 'ClassConnect', 'dist'); // Vite builds to dist
+
 
 io.use((socket, next) => {
       try {
@@ -71,6 +79,8 @@ io.use((socket, next) => {
     });
   });
 
+  
+
 app.get('/',(req,res)=>res.send("API working fine"));
 app.use('/api/auth',authRouter);
 app.use('/api/user-class',userClassRouter);
@@ -83,8 +93,18 @@ app.use('/api/chat',chatRouter);
 app.use('/api/memory', memoryRouter);
 app.use('/api/event',eventRouter);
 app.use('/api/attendance',attendanceRouter);
-app.use((req,res)=>{
-    res.status(404).send("No page found");
-})
+app.use(express.static(clientBuildPath));
+
+// Handle frontend routes
+app.get('*', (req, res) => {
+  if (!req.path.startsWith('/api')) {
+    res.sendFile(path.join(clientBuildPath, 'index.html'));
+  }
+});
+
+// Catch unmatched API routes
+app.use((req, res) => {
+  res.status(404).json({ message: "API route not found" });
+});
 
 httpServer.listen(port, () => console.log(`Server started on PORT:${port}`));
