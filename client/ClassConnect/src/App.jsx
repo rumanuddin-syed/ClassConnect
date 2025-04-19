@@ -8,6 +8,7 @@ import ResetPasswordOTP from './pages/ResetPasswordOTP';
 import NewPassword from './pages/NewPassword';
 import Dashboard from "./pages/Dashboard"
 import ClassDashboard from './pages/ClassDashboard';
+import NotFoundPage from './components/NotFoundPage';
 function App() {
 
   return (
@@ -22,6 +23,7 @@ function App() {
         <Route path="/new-password" element={<NewPassword />} />
         <Route path="/dashboard" element={<Dashboard/>}/>
         <Route path="/class/:classroomId" element={<ClassDashboard />} />
+        <Route path="*" element={<NotFoundPage />} />
       </Routes>
     </Router>
       
