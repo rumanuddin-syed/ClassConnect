@@ -130,7 +130,7 @@ const authSlice = createSlice({
       state.loading = false;
       state.error = null;
       state.success = null;
-      state.otpSent = false;
+      state.resetOtpSent = false;
       state.emailVerified = false;
     },
   },
