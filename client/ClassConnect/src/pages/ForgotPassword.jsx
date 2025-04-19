@@ -5,6 +5,8 @@ import ThemeButton from '../components/ThemeButton'
 import { useDispatch, useSelector } from "react-redux";
 import { sendResetOtp, clearState } from "../redux/slices/authSlice";
 import { motion } from 'framer-motion'; // Add this line
+import { Link } from 'react-router-dom';  // Add this import
+
 export default function ForgotPassword() {
   const [email, setEmail] = useState('')
   const navigate = useNavigate()
@@ -103,12 +105,9 @@ export default function ForgotPassword() {
             <div className="text-center pt-4 border-t border-blue-100 mt-4">
               <p className="text-xs sm:text-sm text-blue-600">
                 Remember your password?{' '}
-                <a 
-                  href="/login" 
-                  className="font-medium text-blue-700 hover:underline"
-                >
+                <Link to="/login" className="font-medium text-blue-700 hover:underline">
                   Login here
-                </a>
+                </Link>
               </p>
             </div>
           </form>
