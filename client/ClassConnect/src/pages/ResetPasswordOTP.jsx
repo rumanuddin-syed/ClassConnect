@@ -6,7 +6,7 @@ import ThemeButton from '../components/ThemeButton'
 import { useDispatch, useSelector } from "react-redux";
 import { verifyOtp } from "../redux/slices/authSlice";
 import { motion } from 'framer-motion';
-
+import { Link } from 'react-router-dom'
 export default function ResetPasswordOTP() {
   const [otp, setOtp] = useState('');
   const [email, setEmail] = useState("");
