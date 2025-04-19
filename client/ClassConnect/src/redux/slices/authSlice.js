@@ -209,17 +209,17 @@ const authSlice = createSlice({
       .addCase(sendResetOtp.pending, (state) => {
         state.loading = true;
         state.error = null;
-        state.otpSent = false;
+        state.resetOtpSent = false;
       })
       .addCase(sendResetOtp.fulfilled, (state) => {
         state.loading = false;
         state.success = "OTP sent successfully!";
-        state.otpSent = true;
+        state.resetOtpSent = true;
       })
       .addCase(sendResetOtp.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
-        state.otpSent = false;
+        state.resetOtpSent = false;
       })
       .addCase(verifyOtp.pending, (state) => {
         state.loading = true;
