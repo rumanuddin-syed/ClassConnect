@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useLocation } from 'react-router-dom'
 import AuthHeader from '../components/AuthHeader'
 import ThemeButton from '../components/ThemeButton'
 import { useDispatch, useSelector } from "react-redux";
@@ -12,25 +12,27 @@ export default function NewPassword() {
   const [email, setEmail] = useState('')
   const [showPassword, setShowPassword] = useState(false)
   const navigate = useNavigate()
+  const location = useLocation()
   const dispatch = useDispatch();
-  const { loading, error, success } = useSelector((state) => state.auth);
-  const { token } = useSelector((state) => state.auth);
+  const { loading, error, success, isAuthenticated } = useSelector((state) => state.auth);
+
+  const resetToken = location.state?.resetToken;
 
   useEffect(() => {
-    const storedEmail = localStorage.getItem("resetEmail");
+    const storedEmail = location.state?.email || sessionStorage.getItem("resetEmail");
     if (!storedEmail) {
       alert("No email found! Please request a reset OTP first.");
       navigate("/forgot-password");
     } else {
       setEmail(storedEmail);
     }
-  }, [navigate]);
+  }, [location.state?.email, navigate]);
 
   useEffect(() => {
-    if (token) {
+    if (isAuthenticated) {
       navigate("/dashboard");
     }
-  }, [token, navigate]);
+  }, [isAuthenticated, navigate]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -44,10 +46,10 @@ export default function NewPassword() {
     }
 
     try {
-      const response = await dispatch(resetPassword({ email, newPassword }));
+      const response = await dispatch(resetPassword({ email, newPassword, resetToken }));
       if (response.meta.requestStatus === "fulfilled") {
         alert("Password reset successful! Redirecting to login...");
-        localStorage.removeItem("resetEmail");
+        sessionStorage.removeItem("resetEmail");
         navigate('/login', { state: { passwordReset: true } });
       }
     } catch (err) {

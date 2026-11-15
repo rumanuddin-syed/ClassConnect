@@ -57,7 +57,7 @@ const Sidebar = ({ activeTab, setActiveTab, sidebarOpen, isMobile, setSidebarOpe
       </button>
       <div className="flex items-center gap-2">
         <FaChalkboardTeacher className="text-2xl text-yellow-400" />
-        <h1 className="text-xl font-bold whitespace-nowrap">ClassConnect</h1>
+        <h1 className="text-xl font-bold whitespace-nowrap">Class Connect</h1>
       </div>
     </div>
     

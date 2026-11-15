@@ -7,7 +7,7 @@
   "main": "server.js",
   "type": "module",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "node tests/auth_rbac.test.js && node tests/integration_security.test.js && node tests/final_critical_verification.test.js",
     "start": "node server.js",
     "server": "nodemon server.js"
   },

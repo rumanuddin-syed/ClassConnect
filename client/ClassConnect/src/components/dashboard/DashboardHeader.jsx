@@ -22,7 +22,7 @@ export default function DashboardHeader({ children }) {
       <div className="max-w-6xl mx-auto flex items-center justify-between">
         <div className="flex items-center space-x-2">
           <FaChalkboardTeacher className="text-2xl text-white" />
-          <h1 className="text-2xl font-black text-white tracking-tight">ClassConnect</h1>
+          <h1 className="text-2xl font-black text-white tracking-tight">Class Connect</h1>
         </div>
         
         <div className="flex items-center space-x-6">

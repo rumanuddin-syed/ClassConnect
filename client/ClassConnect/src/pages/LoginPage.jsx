@@ -12,11 +12,11 @@ export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
-  const { loading, error, token } = useSelector((state) => state.auth);
+  const { loading, error, isAuthenticated } = useSelector((state) => state.auth);
 
   useEffect(() => {
-    if (token) navigate("/dashboard");
-  }, [token, navigate]);
+    if (isAuthenticated) navigate("/dashboard");
+  }, [isAuthenticated, navigate]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -29,7 +29,7 @@ export default function Login() {
         <div className="max-w-6xl mx-auto flex items-center justify-between">
           <div className="flex items-center space-x-2">
             <FaUsers className="text-xl sm:text-2xl text-white" />
-            <h1 className="text-xl sm:text-2xl font-black text-white tracking-tight">ClassConnect</h1>
+            <h1 className="text-xl sm:text-2xl font-black text-white tracking-tight">Class Connect</h1>
           </div>
           <Link to="/" className="text-sm sm:text-base text-white hover:text-blue-200 transition-colors">
             Back to Home

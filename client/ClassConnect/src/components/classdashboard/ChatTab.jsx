@@ -48,22 +48,16 @@ const ChatTab = ({ role }) => {
     scrollToBottom();
   }, [messages, scrollToBottom]);
 
-  const token = useSelector((state) => state.auth.token);
-
   useEffect(() => {
-    if (!token) {
-      console.error('No token available for socket connection');
-      return;
-    }
-  
     let socket;
     let isMounted = true;
     let reconnectAttempts = 0;
     const maxReconnectAttempts = 5;
-  
+
     const setupSocket = () => {
-      socket = connectSocket(token);
-  
+      // Connect socket using withCredentials/cookie transport
+      socket = connectSocket();
+
       socket.on('connect', () => {
         socket.emit('join-classroom', classroomId);
         reconnectAttempts = 0;
@@ -128,7 +122,7 @@ const ChatTab = ({ role }) => {
         }
       }
     };
-  }, [token, classroomId, dispatch, currentUser.id]);
+  }, [classroomId, dispatch, currentUser.id]);
 
   const handleSendMessage = async () => {
     if (!newMessage.trim()) return;

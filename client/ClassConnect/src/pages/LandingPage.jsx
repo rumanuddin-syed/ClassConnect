@@ -46,7 +46,7 @@ export default function LandingPage() {
       <nav className="w-full left-0 py-4 sm:py-6 bg-gradient-to-r from-blue-800 to-blue-600 shadow-xl fixed top-0 z-50 px-4 sm:px-8">
         <div className="flex justify-between items-center">
           <h1 className="text-2xl sm:text-3xl font-black text-white tracking-tight relative overflow-hidden">
-            <span className="relative z-10">ClassConnect</span>
+            <span className="relative z-10">Class Connect</span>
             <motion.div
               className="absolute inset-0 bg-gradient-to-r from-transparent via-white/50 to-transparent opacity-30"
               animate={{
@@ -238,7 +238,7 @@ export default function LandingPage() {
             Ready to Transform Your Classroom?
           </motion.h2>
           <p className="text-lg sm:text-xl text-blue-100 mb-8 max-w-3xl mx-auto">
-            Join thousands of educators who are already enhancing their teaching experience with ClassConnect.
+            Join thousands of educators who are already enhancing their teaching experience with Class Connect.
           </p>
         </div>
       </section>
@@ -252,7 +252,7 @@ export default function LandingPage() {
       >
         <div className="max-w-7xl mx-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8">
           <div className="space-y-4">
-            <h3 className="text-xl sm:text-2xl font-bold">ClassConnect</h3>
+            <h3 className="text-xl sm:text-2xl font-bold">Class Connect</h3>
             <p className="text-sm sm:text-base text-blue-200">Empowering educators since 2023</p>
           </div>
           <div className="space-y-4">
@@ -281,7 +281,7 @@ export default function LandingPage() {
           </div>
         </div>
         <div className="mt-8 pt-8 border-t border-blue-700 text-center text-sm sm:text-base text-blue-300">
-          © 2023 ClassConnect. All rights reserved.
+          © 2023 Class Connect. All rights reserved.
         </div>
       </motion.footer>
 

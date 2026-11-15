@@ -1,28 +1,35 @@
 import axios from "axios";
 
+// Centralized Axios instance
+// Transport: Strict HttpOnly Cookies via withCredentials: true
 const axiosInstance = axios.create({
-  baseURL: "https://classconnect-gsov.onrender.com/api",
+  baseURL: "http://localhost:4000/api",
+  withCredentials: true,
+  headers: {
+    "X-Requested-With": "XMLHttpRequest", // CSRF defense header
+  },
 });
 
-// ✅ Attach token to every request
-axiosInstance.interceptors.request.use((config) => {
-  const token = localStorage.getItem("userToken");
-  if (token) {
-    config.headers.Authorization = `Bearer ${token}`;
-  } else {
-    console.warn("No user token found in localStorage");
-  }
-  return config;
-});
-
-// ✅ Handle token expiry
+// Handle 401 Unauthorized / Token Expiry
 axiosInstance.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error.response && error.response.status === 401) {
-      console.warn("Token expired. Logging out...");
-      localStorage.removeItem("userToken");
-      window.location.href = "/";
+      const url = error.config?.url || "";
+      const isAuthExempt =
+        url.includes("/auth/login") ||
+        url.includes("/auth/register") ||
+        url.includes("/auth/verify-email") ||
+        url.includes("/auth/verify-otp") ||
+        url.includes("/auth/reset-password") ||
+        url.includes("/auth/check");
+
+      if (!isAuthExempt) {
+        console.warn("Unauthorized / Session expired. Redirecting to login...");
+        if (window.location.pathname !== "/login" && window.location.pathname !== "/") {
+          window.location.href = "/login";
+        }
+      }
     }
     return Promise.reject(error);
   }

@@ -9,11 +9,10 @@ import classroomReducer from "./slices/classroomSlice";
 import announcementReducer from "./slices/announcementSlice";
 import subjectReducer from "./slices/subjectSlice";
 import invitationReducer from "./slices/invitationSlice";
-import chatReducer from './slices/chatSlice'; // Add this import
+import chatReducer from './slices/chatSlice';
 import memoryReducer from './slices/memorySlice';
 import eventReducer from './slices/eventSlice';
-import attendanceReducer from './slices/attendanceSlice'; // Add this line
-
+import attendanceReducer from './slices/attendanceSlice';
 
 // Combine all slices
 const rootReducer = combineReducers({
@@ -26,28 +25,27 @@ const rootReducer = combineReducers({
   invitations: invitationReducer,
   chat: chatReducer,
   memories: memoryReducer,
-  events: eventReducer, // Add this line
-  attendance: attendanceReducer // Add this line
-
+  events: eventReducer,
+  attendance: attendanceReducer,
 });
 
-// Configure redux-persist
+// Configure redux-persist:
+// We do NOT persist sensitive auth or user state to avoid stale session spoofing.
+// Only non-sensitive classroom UI state is whitelisted.
 const persistConfig = {
   key: "root",
   storage,
-  whitelist: ["auth", "user", "classroom"], // Only persist important slices
+  whitelist: ["classroom"],
 };
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
 
-// Final store setup
 export const store = configureStore({
   reducer: persistedReducer,
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
-      serializableCheck: false, // required by redux-persist
+      serializableCheck: false,
     }),
 });
 
-// Export persistor
 export const persistor = persistStore(store);

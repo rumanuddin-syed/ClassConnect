@@ -10,7 +10,7 @@ export default function AuthHeader({ title, showBack = false }) {
             <FaArrowLeft className="text-lg" />
           </Link>
         )}
-        <h1 className="text-2xl font-black text-white tracking-tight">ClassConnect</h1>
+        <h1 className="text-2xl font-black text-white tracking-tight">Class Connect</h1>
         <div className="ml-auto">
           <span className="text-white text-sm">{title}</span>
         </div>

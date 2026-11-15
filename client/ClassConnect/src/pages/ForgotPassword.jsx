@@ -11,8 +11,7 @@ export default function ForgotPassword() {
   const [email, setEmail] = useState('')
   const navigate = useNavigate()
   const dispatch = useDispatch();
-  const { loading, error, resetOtpSent } = useSelector((state) => state.auth);
-  const { token } = useSelector((state) => state.auth);
+  const { loading, error, resetOtpSent, isAuthenticated } = useSelector((state) => state.auth);
 
   const handleSubmit = async (e) => {
     e.preventDefault()
@@ -24,7 +23,7 @@ export default function ForgotPassword() {
     try {
       const response = await dispatch(sendResetOtp(email));
       if (response.meta.requestStatus === "fulfilled") {
-        localStorage.setItem("resetEmail", email);
+        sessionStorage.setItem("resetEmail", email);
       }
     } catch (err) {
       console.error("Error sending OTP:", err);
@@ -39,10 +38,10 @@ export default function ForgotPassword() {
   }, [resetOtpSent, navigate, dispatch, email]);
 
   useEffect(() => {
-    if (token) {
+    if (isAuthenticated) {
       navigate("/dashboard");
     }
-  }, [token, navigate]);
+  }, [isAuthenticated, navigate]);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-100 via-navy-120 to-blue-100 font-sans">

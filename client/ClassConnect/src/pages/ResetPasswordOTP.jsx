@@ -12,24 +12,23 @@ export default function ResetPasswordOTP() {
   const [email, setEmail] = useState("");
   const navigate = useNavigate()
   const dispatch = useDispatch();
-  const { loading, error, success } = useSelector((state) => state.auth);
-  const { token } = useSelector((state) => state.auth);
+  const { loading, error, success, isAuthenticated } = useSelector((state) => state.auth);
 
   useEffect(() => {
-    const storedEmail = localStorage.getItem("resetEmail");
+    const storedEmail = location.state?.email || sessionStorage.getItem("resetEmail");
     if (!storedEmail) {
       alert("No email found! Please request a reset OTP first.");
       navigate("/forgot-password");
     } else {
       setEmail(storedEmail);
     }
-  }, [navigate]);
+  }, [location.state?.email, navigate]);
 
   useEffect(() => {
-    if (token) {
+    if (isAuthenticated) {
       navigate("/dashboard");
     }
-  }, [token, navigate]);
+  }, [isAuthenticated, navigate]);
 
   const handleOTPComplete = (code) => {
     setOtp(code);
@@ -45,7 +44,8 @@ export default function ResetPasswordOTP() {
     try {
       const response = await dispatch(verifyOtp({ email, otp: String(otp) }));
       if (response.meta.requestStatus === "fulfilled") {
-        navigate('/new-password', { state: { email, otp } });
+        const resetToken = response.payload?.resetToken;
+        navigate('/new-password', { state: { email, otp, resetToken } });
       }
     } catch (err) {
       console.error("OTP Verification Error:", err);

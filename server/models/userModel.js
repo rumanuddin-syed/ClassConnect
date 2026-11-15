@@ -15,9 +15,12 @@ const userSchema = new mongoose.Schema({
     }
   ],
   resetOtp: { type: String, default: '' },
-  resetOtpExpireAt: { type: Number, default: 0 }
+  resetOtpExpireAt: { type: Number, default: 0 },
+  resetOtpAttempts: { type: Number, default: 0 },
+  tokenVersion: { type: Number, default: 0 },
+  usedResetTokens: [{ type: String }]
 });
 
-const User =mongoose.models.user|| mongoose.model('User',userSchema);
+const User = mongoose.models.user || mongoose.model('User', userSchema);
 
 export default User;

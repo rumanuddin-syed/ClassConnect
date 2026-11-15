@@ -1,14 +1,14 @@
 // server/socketInstance.js
-import { Server } from 'socket.io';
+import { Server } from "socket.io";
 
 let io = null;
 
 export const initializeSocket = (httpServer) => {
   io = new Server(httpServer, {
     cors: {
-      origin:[ "https://classconnectproject.onrender.com"],
-      credentials: true
-    }
+      origin: ["http://localhost:5173"],
+      credentials: true,
+    },
   });
   return io;
 };

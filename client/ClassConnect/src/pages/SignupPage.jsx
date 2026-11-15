@@ -1,18 +1,21 @@
-import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { motion } from 'framer-motion';
-import { FaChalkboardTeacher, FaEye, FaEyeSlash } from 'react-icons/fa';
-import { useDispatch, useSelector } from 'react-redux';
-import { registerUser, verifyEmailOtp } from '../redux/slices/authSlice';
-import ThemeButton from '../components/ThemeButton';
+import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { motion } from "framer-motion";
+import { FaChalkboardTeacher, FaEye, FaEyeSlash } from "react-icons/fa";
+import { useDispatch, useSelector } from "react-redux";
+import { registerUser, verifyEmailOtp } from "../redux/slices/authSlice";
+import ThemeButton from "../components/ThemeButton";
 
 export default function Signup() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [form, setForm] = useState({ name: "", email: "", password: "" });
   const [otp, setOtp] = useState("");
+  const [otpEmail, setOtpEmail] = useState("");
   const [showPassword, setShowPassword] = useState(false);
-  const { loading, error, registrationOtpSent } = useSelector((state) => state.auth);
+  const { loading, error, registrationOtpSent } = useSelector(
+    (state) => state.auth,
+  );
 
   const handleRegistration = (e) => {
     e.preventDefault();
@@ -20,17 +23,31 @@ export default function Signup() {
       alert("Please fill in all fields");
       return;
     }
+    setOtpEmail(form.email);
     dispatch(registerUser(form));
   };
 
-  const handleOtpVerification = (e) => {
+  const handleOtpVerification = async (e) => {
     e.preventDefault();
+    if (!otpEmail) {
+      alert("Email is required for OTP verification");
+      return;
+    }
     if (otp.length !== 6) {
       alert("Please enter a valid 6-digit OTP");
       return;
     }
-    dispatch(verifyEmailOtp({ email: form.email, otp }));
-    navigate('/login')
+
+    try {
+      const result = await dispatch(
+        verifyEmailOtp({ email: otpEmail, otp }),
+      ).unwrap();
+      if (result.success) {
+        navigate("/login");
+      }
+    } catch (error) {
+      console.error("OTP verification failed:", error);
+    }
   };
 
   return (
@@ -39,16 +56,21 @@ export default function Signup() {
         <div className="max-w-6xl mx-auto flex items-center justify-between">
           <div className="flex items-center space-x-2">
             <FaChalkboardTeacher className="text-xl sm:text-2xl text-white" />
-            <h1 className="text-xl sm:text-2xl font-black text-white tracking-tight">ClassConnect</h1>
+            <h1 className="text-xl sm:text-2xl font-black text-white tracking-tight">
+              Class Connect
+            </h1>
           </div>
-          <Link to="/" className="text-sm sm:text-base text-white hover:text-blue-200 transition-colors">
+          <Link
+            to="/"
+            className="text-sm sm:text-base text-white hover:text-blue-200 transition-colors"
+          >
             Back to Home
           </Link>
         </div>
       </header>
 
       <main className="flex items-center justify-center py-8 sm:py-12 px-4 sm:px-6">
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.3 }}
@@ -59,9 +81,9 @@ export default function Signup() {
               <h2 className="text-xl sm:text-2xl font-bold text-blue-900 mb-4 sm:mb-6 text-center">
                 Create Your Account
               </h2>
-              
+
               {error && (
-                <motion.div 
+                <motion.div
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   className="p-3 bg-red-50 text-red-600 rounded-lg text-sm mb-4"
@@ -70,12 +92,21 @@ export default function Signup() {
                 </motion.div>
               )}
 
-              <form onSubmit={handleRegistration} className="space-y-3 sm:space-y-4">
+              <form
+                onSubmit={handleRegistration}
+                className="space-y-3 sm:space-y-4"
+              >
                 <div>
-                  <label htmlFor="name" className="block text-sm sm:text-base text-blue-700 mb-1">Full Name</label>
+                  <label
+                    htmlFor="name"
+                    className="block text-sm sm:text-base text-blue-700 mb-1"
+                  >
+                    Full Name
+                  </label>
                   <input
                     type="text"
                     id="name"
+                    value={form.name}
                     className="w-full px-4 py-2.5 sm:py-3 text-sm sm:text-base rounded-lg border border-blue-100 focus:border-blue-400 focus:ring-1 focus:ring-blue-200 outline-none transition"
                     onChange={(e) => setForm({ ...form, name: e.target.value })}
                     required
@@ -84,24 +115,40 @@ export default function Signup() {
                 </div>
 
                 <div>
-                  <label htmlFor="email" className="block text-sm sm:text-base text-blue-700 mb-1">Email</label>
+                  <label
+                    htmlFor="email"
+                    className="block text-sm sm:text-base text-blue-700 mb-1"
+                  >
+                    Email
+                  </label>
                   <input
                     type="email"
                     id="email"
+                    value={form.email}
                     className="w-full px-4 py-2.5 sm:py-3 text-sm sm:text-base rounded-lg border border-blue-100 focus:border-blue-400 focus:ring-1 focus:ring-blue-200 outline-none transition"
-                    onChange={(e) => setForm({ ...form, email: e.target.value })}
+                    onChange={(e) =>
+                      setForm({ ...form, email: e.target.value })
+                    }
                     required
                     autoComplete="email"
                   />
                 </div>
 
                 <div className="relative">
-                  <label htmlFor="password" className="block text-sm sm:text-base text-blue-700 mb-1">Password</label>
+                  <label
+                    htmlFor="password"
+                    className="block text-sm sm:text-base text-blue-700 mb-1"
+                  >
+                    Password
+                  </label>
                   <input
                     type={showPassword ? "text" : "password"}
                     id="password"
+                    value={form.password}
                     className="w-full px-4 py-2.5 sm:py-3 text-sm sm:text-base rounded-lg border border-blue-100 focus:border-blue-400 focus:ring-1 focus:ring-blue-200 outline-none transition pr-10"
-                    onChange={(e) => setForm({ ...form, password: e.target.value })}
+                    onChange={(e) =>
+                      setForm({ ...form, password: e.target.value })
+                    }
                     required
                     minLength={8}
                     autoComplete="new-password"
@@ -110,26 +157,50 @@ export default function Signup() {
                     type="button"
                     className="absolute right-3 bottom-2.5 text-blue-400 hover:text-blue-600"
                     onClick={() => setShowPassword(!showPassword)}
-                    aria-label={showPassword ? "Hide password" : "Show password"}
+                    aria-label={
+                      showPassword ? "Hide password" : "Show password"
+                    }
                   >
-                    {showPassword ? <FaEyeSlash className="h-5 w-5" /> : <FaEye className="h-5 w-5" />}
+                    {showPassword ? (
+                      <FaEyeSlash className="h-5 w-5" />
+                    ) : (
+                      <FaEye className="h-5 w-5" />
+                    )}
                   </button>
                 </div>
 
-                <ThemeButton 
-                  type="submit" 
+                <ThemeButton
+                  type="submit"
                   disabled={loading}
                   className="w-full py-2.5 sm:py-3 text-sm sm:text-base mt-4"
                 >
                   {loading ? (
                     <span className="flex items-center justify-center">
-                      <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                      <svg
+                        className="animate-spin -ml-1 mr-2 h-4 w-4 text-white"
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                      >
+                        <circle
+                          className="opacity-25"
+                          cx="12"
+                          cy="12"
+                          r="10"
+                          stroke="currentColor"
+                          strokeWidth="4"
+                        ></circle>
+                        <path
+                          className="opacity-75"
+                          fill="currentColor"
+                          d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                        ></path>
                       </svg>
                       Sending OTP...
                     </span>
-                  ) : "Get Verification OTP"}
+                  ) : (
+                    "Get Verification OTP"
+                  )}
                 </ThemeButton>
               </form>
             </>
@@ -138,9 +209,9 @@ export default function Signup() {
               <h2 className="text-xl sm:text-2xl font-bold text-blue-900 mb-4 sm:mb-6 text-center">
                 Verify Your Email
               </h2>
-              
+
               {error && (
-                <motion.div 
+                <motion.div
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   className="p-3 bg-red-50 text-red-600 rounded-lg text-sm mb-4"
@@ -152,8 +223,11 @@ export default function Signup() {
               <form onSubmit={handleOtpVerification} className="space-y-4">
                 <div className="text-center mb-4">
                   <p className="text-sm text-gray-600">
-                    We've sent a 6-digit code to<br/>
-                    <span className="font-medium text-blue-700">{form.email}</span>
+                    We've sent a 6-digit code to
+                    <br />
+                    <span className="font-medium text-blue-700">
+                      {otpEmail || form.email}
+                    </span>
                   </p>
                 </div>
 
@@ -167,21 +241,25 @@ export default function Signup() {
                       className="w-12 h-12 text-2xl text-center border border-blue-200 rounded-lg focus:ring-2 focus:ring-blue-500"
                       value={otp[index] || ""}
                       onChange={(e) => {
-                        const value = e.target.value.replace(/\D/g, ''); // Only allow numbers
+                        const value = e.target.value.replace(/\D/g, ""); // Only allow numbers
                         const newOtp = otp.split("");
                         newOtp[index] = value;
                         setOtp(newOtp.join(""));
-                        
+
                         // Auto focus next input
                         if (value && index < 5) {
-                          const nextInput = document.getElementById(`otp-${index + 1}`);
+                          const nextInput = document.getElementById(
+                            `otp-${index + 1}`,
+                          );
                           if (nextInput) nextInput.focus();
                         }
                       }}
                       onKeyDown={(e) => {
                         // Handle backspace
-                        if (e.key === 'Backspace' && !otp[index] && index > 0) {
-                          const prevInput = document.getElementById(`otp-${index - 1}`);
+                        if (e.key === "Backspace" && !otp[index] && index > 0) {
+                          const prevInput = document.getElementById(
+                            `otp-${index - 1}`,
+                          );
                           if (prevInput) prevInput.focus();
                         }
                       }}
@@ -192,20 +270,38 @@ export default function Signup() {
                   ))}
                 </div>
 
-                <ThemeButton 
-                  type="submit" 
+                <ThemeButton
+                  type="submit"
                   disabled={loading}
                   className="w-full py-2.5 sm:py-3 text-sm sm:text-base"
                 >
                   {loading ? (
                     <span className="flex items-center justify-center">
-                      <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                      <svg
+                        className="animate-spin -ml-1 mr-2 h-4 w-4 text-white"
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                      >
+                        <circle
+                          className="opacity-25"
+                          cx="12"
+                          cy="12"
+                          r="10"
+                          stroke="currentColor"
+                          strokeWidth="4"
+                        ></circle>
+                        <path
+                          className="opacity-75"
+                          fill="currentColor"
+                          d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                        ></path>
                       </svg>
                       Verifying...
                     </span>
-                  ) : "Verify Account"}
+                  ) : (
+                    "Verify Account"
+                  )}
                 </ThemeButton>
 
                 <div className="text-center text-sm">
@@ -223,12 +319,24 @@ export default function Signup() {
           )}
 
           <div className="mt-4 sm:mt-6 text-center text-xs sm:text-sm text-blue-600">
-            <p>By signing up, you agree to our <a href="#" className="underline">Terms</a> and <a href="#" className="underline">Privacy Policy</a></p>
+            <p>
+              By signing up, you agree to our{" "}
+              <a href="#" className="underline">
+                Terms
+              </a>{" "}
+              and{" "}
+              <a href="#" className="underline">
+                Privacy Policy
+              </a>
+            </p>
           </div>
 
           {!registrationOtpSent && (
             <div className="mt-4 text-center">
-              <Link to="/login" className="text-xs sm:text-sm text-blue-600 hover:underline font-medium">
+              <Link
+                to="/login"
+                className="text-xs sm:text-sm text-blue-600 hover:underline font-medium"
+              >
                 Already have an account? Login
               </Link>
             </div>

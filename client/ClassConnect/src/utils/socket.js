@@ -1,34 +1,28 @@
-import { io } from 'socket.io-client';
+import { io } from "socket.io-client";
 
 let socket;
 
-export const connectSocket = (token) => {
-  if (!token) {
-    throw new Error('Cannot connect socket: No token provided');
-  }
-  const rawToken = token.replace(/^Bearer\s+/i, '').trim();
-  socket = io("https://classconnect-gsov.onrender.com", {
-    auth: { 
-      token:rawToken,
-    },
+/**
+ * Socket.IO client using standard credentials/cookie transport.
+ */
+export const connectSocket = () => {
+  const options = {
     withCredentials: true,
-    transports: ['websocket'],
-    reconnection: false // Disable during debugging
+    transports: ["websocket", "polling"],
+    reconnection: true,
+  };
+
+  socket = io("http://localhost:4000", options);
+
+  socket.on("connect_error", (err) => {
+    console.error("Socket connection failed:", err.message);
   });
 
-  socket.on('connect_error', (err) => {
-    console.error('Socket connection failed:', {
-      message: err.message,
-      description: err.description,
-      context: err.context
-    });
-  });
-
-
-  socket.on('disconnect', (reason) => {
-    console.log('Socket disconnected:', reason);
+  socket.on("disconnect", (reason) => {
+    console.log("Socket disconnected:", reason);
   });
 
   return socket;
 };
 
+export default connectSocket;
